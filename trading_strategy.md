@@ -18,37 +18,31 @@ Suppose Stock A and Stock B have a historically stable spread. If the spread wid
 
 A **z-score** is a statistical measure that indicates how many standard deviations an element is from the mean of a dataset. It’s commonly used to understand the position of a data point within a distribution and is especially useful in detecting anomalies or deviations from a historical pattern. In statistical arbitrage and trading, the z-score helps determine if a price or price spread has deviated significantly from its average, often signaling a potential trade opportunity.
 
-### How Z-Scores Work
-
 The **formula for calculating a z-score** is:
 
-\[
+$$
 z = \frac{(X - \mu)}{\sigma}
-\]
+$$
 
 where:
-- \( X \) is the data point (e.g., a current price or spread between two assets),
-- \( \mu \) is the mean (average) of the dataset,
-- \( \sigma \) is the standard deviation of the dataset.
+- $X$ is the data point (e.g., a current price or spread between two assets),
+- $\mu$ is the mean (average) of the dataset,
+- $\sigma$ is the standard deviation of the dataset.
 
-### Interpreting the Z-Score
+**Interpreting the Z-Score**
 - A **z-score of 0** means the data point is exactly at the mean.
 - A **positive z-score** indicates that the data point is above the mean.
 - A **negative z-score** shows that the data point is below the mean.
 - **High z-scores** (e.g., above 2 or 3) imply that the data point is significantly above the mean, while **low z-scores** (e.g., below -2 or -3) indicate that it’s significantly below the mean.
 
-For example:
-- **z = 1** means the data point is 1 standard deviation above the mean.
-- **z = -2** means the data point is 2 standard deviations below the mean.
+---
 
-### Why Z-Scores Matter in Trading
+### **Z-scores in Trading** ###
 
-In trading strategies like **pairs trading**:
-1. Calculate the z-score of the **spread** between two cointegrated assets (the difference in their prices).
-2. A high positive or negative z-score in the spread can signal a trade opportunity:
-   - If the z-score is **positive and high** (e.g., 2 or above), it may suggest the spread is unusually wide, meaning the higher-priced asset could be overbought relative to the other asset.
-   - If the z-score is **negative and low** (e.g., -2 or below), it may indicate the spread is unusually narrow, meaning the higher-priced asset may be oversold.
+- A **high z-score** (e.g., +2 or +3) indicates that the price spread between the two assets is unusually wide compared to its historical average. This can suggest that the higher-priced asset might be overvalued relative to the other, or the lower-priced asset might be undervalued. In pairs trading, this would typically signal a potential opportunity to **short the higher-priced asset** and **buy the lower-priced asset**, anticipating that the spread will narrow as they revert to their usual relationship.
 
-By using z-scores, traders identify when the relationship between two assets has deviated significantly from the norm, potentially predicting that they will revert to the mean, which creates an opportunity for profitable trades.
+- A **low z-score** (e.g., -2 or -3) means that the spread is unusually narrow, with the prices of the two assets closer together than usual. This might suggest that the higher-priced asset is undervalued relative to the other, or the lower-priced asset is overvalued. Here, it may signal an opportunity to **buy the higher-priced asset** and **short the lower-priced asset**, expecting the spread to widen back to its historical mean.
 
-How to identify a pair of cointegrated assets through historical data:
+---
+
+### **How can I identify a pair of cointegrated assets through historical data?** ###
