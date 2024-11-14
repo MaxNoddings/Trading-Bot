@@ -45,4 +45,32 @@ where:
 
 ---
 
+### **What is the difference between Cointegration and Correlation?** ###
+
+**Correlation**
+- **Correlation** measures the **degree and direction of linear relationship** between two variables. If two assets have a high positive correlation, their prices tend to move up and down together in the short term. 
+- Correlation values range from -1 to +1:
+  - **+1**: Perfect positive linear relationship (both assets move in the same direction).
+  - **-1**: Perfect negative linear relationship (one asset goes up as the other goes down).
+  - **0**: No linear relationship (assets move independently of each other).
+- Correlation is **symmetric** and does not account for time dependency, nor does it indicate any "long-term equilibrium" relationship between the assets.
+- A high correlation is useful for identifying pairs that may move similarly, but it does not mean they will revert to a stable relationship over time.
+
+**Cointegration**
+- **Cointegration** is a concept from time series analysis that describes a **long-term equilibrium relationship** between two (or more) non-stationary time series. 
+- Two assets are said to be cointegrated if their **price difference (spread) tends to revert to a constant mean over time**, even though each asset price itself may wander unpredictably. Cointegration implies that the assets are bound together in the long term, despite short-term deviations.
+- Unlike correlation, cointegration can **detect a stable, mean-reverting relationship** even when the assets are not strongly correlated in the short term.
+  
+
+**Key Differences**
+1. **Persistence**: Correlation does not imply that two assets will maintain a stable, mean-reverting relationship over time. Cointegration, however, indicates that the assets will revert to a mean value over time.
+2. **Short-term vs. Long-term**: Correlation is often useful for short-term movement relationships, whereas cointegration is useful for identifying pairs that have a stable relationship over the long term.
+3. **Implication for Strategies**: In pairs trading (like statistical arbitrage), cointegration is more valuable than correlation because it indicates a stable relationship. Cointegrated assets tend to revert to their mean spread, making them ideal for mean-reversion strategies.
+
+**Example**
+- **Correlated, but not cointegrated**: Suppose two technology stocks are correlated because they’re both influenced by similar market forces. However, they don’t have a stable price spread, meaning their prices could drift apart permanently over time.
+- **Cointegrated**: Imagine a company and its subsidiary, where the parent company stock price is cointegrated with the subsidiary’s stock price. Their prices may fluctuate, but they tend to revert to a certain spread due to the underlying business relationship.
+
+---
+
 ### **How can I identify a pair of cointegrated assets through historical data?** ###
