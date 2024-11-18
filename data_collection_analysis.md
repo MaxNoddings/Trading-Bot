@@ -179,3 +179,5 @@ Plan:
 ---
 
 I am currently at the step where I want to find two (or more) cointegrated stocks. Would it be possible to search through a bunch of stock market data to find two stocks that are the "most" cointegrated, or two stocks that could work the best for my strategy trading strategy at hand - meaning that they must be cointegrated, but it is ok if they have some swings up and down?
+
+Now, I want to download a bunch of stock data and test for cointegration. I am worried that it may be too computationaly intensive to download a ton of stock market data, say for the whole S&P 500. Is there any way that I could try to start downloading all of this data, and print out along the way the status of the download, so that if it is taking too long I can just CTRL+C and end the program? Also - is there a command for me to work with all of the stocks in the S&P 500 rather than manually listing out the name of every single stock?
