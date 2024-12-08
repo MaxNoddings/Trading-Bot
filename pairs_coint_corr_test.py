@@ -3,6 +3,15 @@ import yfinance as yf
 import pandas as pd
 from statsmodels.tsa.stattools import coint
 
+def get_ipo_date(tickerObject):
+    """Gets the estimated IPO date of a stock using yfinance."""
+    try:
+        hist = tickerObject.history(period="max")
+        return hist.index.min().date()
+    except Exception as e:
+        print(f"Error fetching data for {ticker}: {e}")
+        return None
+
 def analyze_cointegration_and_correlation(stock1, stock2, start_date, end_date):
     """
     Analyzes the cointegration and correlation between two stocks.
