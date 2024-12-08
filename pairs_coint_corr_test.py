@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import yfinance as yf
 import pandas as pd
 from statsmodels.tsa.stattools import coint
@@ -56,18 +57,33 @@ def main():
     # Get tickers and their company names from command-line arguments
     tickerSymbol1 = args.ticker1
     tickerObject1 = yf.Ticker(tickerSymbol1)
+    ipo_date1 = get_ipo_date(tickerObject1)
     company_name1 = tickerObject1.info.get("longName", "Name not available")
     tickerSymbol2 = args.ticker2
     tickerObject2 = yf.Ticker(tickerSymbol2)
+    ipo_date2 = get_ipo_date(tickerObject2)
     company_name2 = tickerObject2.info.get("longName", "Name not available")
 
-    # cokeTicker = 'KO'  # Coca-Cola
-    # pepsiTicker = 'PEP'  # PepsiCo
-    # print("\nCoke and Pepsi -------------------------------------------")
+    # Compare IPO dates and select the most recent
+    if ipo_date1 > ipo_date2:
+        start_date = ipo_date1
+        print(f"{tickerSymbol1} has a more recent IPO of {ipo_date1}.")
+        print(f"{tickerSymbol2}'s was on {ipo_date2}.")
+    elif ipo_date2 > ipo_date1:
+        start_date = ipo_date2
+        print(f"{tickerSymbol2} has a more recent IPO of {ipo_date2}.")
+        print(f"{tickerSymbol1}'s was on {ipo_date1}.")
+    
+    # Todays date
+    today = datetime.date.today()
+    formatted_date = today.strftime("%Y-%m-%d")
+
+    print(f"The start date is: {start_date}")
+    print(f"The end date is: {formatted_date}")
     
     print(f"\n{company_name1} ({tickerSymbol1}) and {company_name2} ({tickerSymbol2}) -------------------------------------")
 
-    cointegration, correlation = analyze_cointegration_and_correlation(tickerSymbol1, tickerSymbol2, '1978-01-13', '2024-12-08')
+    cointegration, correlation = analyze_cointegration_and_correlation(tickerSymbol1, tickerSymbol2, start_date, formatted_date)
     print(f"Cointegration p-value: {cointegration}")
     print(f"Correlation coefficient: {correlation}")
 
