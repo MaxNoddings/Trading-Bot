@@ -24,4 +24,4 @@ Pair candidates:
 ### **Next Steps:** ### 
 - refine correlation/cointegration algorithm scoring system
 - test algorithms on all pairs
-- choose final pair with highest correlation/cointegration score to trade with and then go on to developing the trading
+- choose final pair with highest correlation/cointegration score to trade with and then go on to developing the trading strategies
