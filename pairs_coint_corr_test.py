@@ -67,27 +67,24 @@ def main():
     # Compare IPO dates and select the most recent
     if ipo_date1 > ipo_date2:
         start_date = ipo_date1
-        print(f"{tickerSymbol1} has a more recent IPO of {ipo_date1}.")
-        print(f"{tickerSymbol2}'s was on {ipo_date2}.")
+        # print(f"{tickerSymbol1} has a more recent IPO of {ipo_date1}.")
+        # print(f"{tickerSymbol2}'s was on {ipo_date2}.")
     elif ipo_date2 > ipo_date1:
         start_date = ipo_date2
-        print(f"{tickerSymbol2} has a more recent IPO of {ipo_date2}.")
-        print(f"{tickerSymbol1}'s was on {ipo_date1}.")
+        # print(f"{tickerSymbol2} has a more recent IPO of {ipo_date2}.")
+        # print(f"{tickerSymbol1}'s was on {ipo_date1}.")
     
     # Todays date
     today = datetime.date.today()
     formatted_date = today.strftime("%Y-%m-%d")
-
-    print(f"The start date is: {start_date}")
-    print(f"The end date is: {formatted_date}")
     
     print(f"\n{company_name1} ({tickerSymbol1}) and {company_name2} ({tickerSymbol2}) -------------------------------------")
+    print(f"The start date is: {start_date}")
+    print(f"The end date is: {formatted_date}")
 
     cointegration, correlation = analyze_cointegration_and_correlation(tickerSymbol1, tickerSymbol2, start_date, formatted_date)
     print(f"Cointegration p-value: {cointegration}")
-    print(f"Correlation coefficient: {correlation}")
-
-    print("\nNext Trial")
+    print(f"Correlation coefficient: {correlation}\n")
 
 if __name__ == "__main__":
     main()
