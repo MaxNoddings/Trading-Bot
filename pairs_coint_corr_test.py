@@ -1,3 +1,4 @@
+import argparse
 import yfinance as yf
 import pandas as pd
 from statsmodels.tsa.stattools import coint
@@ -34,12 +35,34 @@ def analyze_cointegration_and_correlation(stock1, stock2, start_date, end_date):
     
     return cointegration_p_value, correlation
 
-cokeTicker = 'KO'  # Coca-Cola
-pepsiTicker = 'PEP'  # PepsiCo
-print("\nCoke and Pepsi -------------------------------------------")
+def main():
+    # Set up argparse
+    parser = argparse.ArgumentParser(description="Calculate correlation and cointegration between two stocks.")
+    parser.add_argument("ticker1", type=str, help="The first stock ticker symbol (e.g., AAPL).")
+    parser.add_argument("ticker2", type=str, help="The second stock ticker symbol (e.g., MSFT).")
 
-cointegration, correlation = analyze_cointegration_and_correlation(cokeTicker, pepsiTicker, '1978-01-13', '2024-12-08')
-print(f"Cointegration p-value: {cointegration}")
-print(f"Correlation coefficient: {correlation}")
+    # Parse the command-line arguments
+    args = parser.parse_args()
 
-print("\nNext Trial")
+    # Get tickers and their company names from command-line arguments
+    tickerSymbol1 = args.ticker1
+    tickerObject1 = yf.Ticker(tickerSymbol1)
+    company_name1 = tickerObject1.info.get("longName", "Name not available")
+    tickerSymbol2 = args.ticker2
+    tickerObject2 = yf.Ticker(tickerSymbol2)
+    company_name2 = tickerObject2.info.get("longName", "Name not available")
+
+    # cokeTicker = 'KO'  # Coca-Cola
+    # pepsiTicker = 'PEP'  # PepsiCo
+    # print("\nCoke and Pepsi -------------------------------------------")
+    
+    print(f"\n{company_name1} ({tickerSymbol1}) and {company_name2} ({tickerSymbol2}) -------------------------------------")
+
+    cointegration, correlation = analyze_cointegration_and_correlation(tickerSymbol1, tickerSymbol2, '1978-01-13', '2024-12-08')
+    print(f"Cointegration p-value: {cointegration}")
+    print(f"Correlation coefficient: {correlation}")
+
+    print("\nNext Trial")
+
+if __name__ == "__main__":
+    main()
