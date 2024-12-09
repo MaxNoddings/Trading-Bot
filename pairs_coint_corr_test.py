@@ -8,6 +8,7 @@ def get_ipo_date(tickerObject):
     """Gets the estimated IPO date of a stock using yfinance."""
     try:
         hist = tickerObject.history(period="max")
+        print("ABLE TO GET IPO DATE")
         return hist.index.min().date()
     except Exception as e:
         print(f"Error fetching data for {ticker}: {e}")
@@ -67,12 +68,20 @@ def main():
     # Compare IPO dates and select the most recent
     if ipo_date1 > ipo_date2:
         start_date = ipo_date1
+        # print("START DATE ASSIGNED")
         # print(f"{tickerSymbol1} has a more recent IPO of {ipo_date1}.")
         # print(f"{tickerSymbol2}'s was on {ipo_date2}.")
     elif ipo_date2 > ipo_date1:
         start_date = ipo_date2
+        # print("START DATE ASSIGNED")
         # print(f"{tickerSymbol2} has a more recent IPO of {ipo_date2}.")
         # print(f"{tickerSymbol1}'s was on {ipo_date1}.")
+    else:
+        start_date = ipo_date2
+        # print("START DATES ASSIGNED AND MUST BE THE SAME?")
+        # print(f"{tickerSymbol2}'S IPO was on {ipo_date2}.")
+        # print(f"{tickerSymbol1}'s IPO was on {ipo_date1}.")
+
     
     # Todays date
     today = datetime.date.today()
