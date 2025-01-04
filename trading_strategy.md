@@ -60,6 +60,9 @@ where:
 - **Cointegration** is a concept from time series analysis that describes a **long-term equilibrium relationship** between two (or more) non-stationary time series. 
 - Two assets are said to be cointegrated if their **price difference (spread) tends to revert to a constant mean over time**, even though each asset price itself may wander unpredictably. Cointegration implies that the assets are bound together in the long term, despite short-term deviations.
 - Unlike correlation, cointegration can **detect a stable, mean-reverting relationship** even when the assets are not strongly correlated in the short term.
+- Note: **cointegration** functions may return p-values which range from 0 to 1.
+  - **0:** Suggests strong evidence against the null hypothesis. In terms of **cointegration** this indicates strong evidence that the two time series are cointegrated.
+  - **1:** Suggests weak or no evidence against the null hypothesis. In terms of **cointegration** a high p-value indicates that there is likely no significant long-term relationship between the two time series.
   
 
 **Key Differences**

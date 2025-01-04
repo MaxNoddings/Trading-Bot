@@ -47,6 +47,8 @@ def analyze_cointegration_and_correlation(stock1, stock2, start_date, end_date):
     return cointegration_p_value, correlation
 
 def main():
+    print("\n")
+
     # Set up argparse
     parser = argparse.ArgumentParser(description="Calculate correlation and cointegration between two stocks.")
     parser.add_argument("ticker1", type=str, help="The first stock ticker symbol (e.g., AAPL).")
@@ -68,19 +70,19 @@ def main():
     # Compare IPO dates and select the most recent
     if ipo_date1 > ipo_date2:
         start_date = ipo_date1
-        # print("START DATE ASSIGNED")
-        # print(f"{tickerSymbol1} has a more recent IPO of {ipo_date1}.")
-        # print(f"{tickerSymbol2}'s was on {ipo_date2}.")
+        print("START DATE ASSIGNED")
+        print(f"{tickerSymbol1} has a more recent IPO of {ipo_date1}.")
+        print(f"{tickerSymbol2}'s was on {ipo_date2}.")
     elif ipo_date2 > ipo_date1:
         start_date = ipo_date2
-        # print("START DATE ASSIGNED")
-        # print(f"{tickerSymbol2} has a more recent IPO of {ipo_date2}.")
-        # print(f"{tickerSymbol1}'s was on {ipo_date1}.")
+        print("START DATE ASSIGNED")
+        print(f"{tickerSymbol2} has a more recent IPO of {ipo_date2}.")
+        print(f"{tickerSymbol1}'s was on {ipo_date1}.")
     else:
         start_date = ipo_date2
-        # print("START DATES ASSIGNED AND MUST BE THE SAME?")
-        # print(f"{tickerSymbol2}'S IPO was on {ipo_date2}.")
-        # print(f"{tickerSymbol1}'s IPO was on {ipo_date1}.")
+        print("START DATES ASSIGNED AND MUST BE THE SAME?")
+        print(f"{tickerSymbol2}'S IPO was on {ipo_date2}.")
+        print(f"{tickerSymbol1}'s IPO was on {ipo_date1}.")
 
     
     # Todays date
