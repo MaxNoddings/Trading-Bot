@@ -176,3 +176,12 @@ This is the code that I am currently using:
 Now, I want a function that loops back through the DataFrame. For this function, I want to record stock returns over the time whenever Position = 1. In the row when position first turns from 0 to 1, if the Z-Score for that column is a negative number, then start a buy/long order of AAPL, and a short order of MSFT. If the Z-Score for the column when position first turns from 0 to 1 is a positive number, then start a short order of AAPL, and a buy/long order of MSFT. Then, once Position changes back from 1 to 0, then exit the buy/short orders that were places and calculate the returns. 
 
 For this iterative function, I want it to print out something after each trade completes, effectively printing out the performance of that specific trade. Then, I also want it to print out a cumulative returns result too. Print out a percentage result and a dollar amount result assuming for each entry/exit one share is bought/shorted. 
+
+
+
+When tracking returns in stock trading, what is the best way to do it? Lets say I have enough money to buy one apple stock (priced at $100) and one microsoft stock (priced at $250), giving my portfolio a value of $350. I buy both of the stocks and apple goes up be 5% (to $105) and then microsoft goes up by 10% (to $275). My portfolio value is now $380. 
+
+What would my total return percentage be? = 8.57%
+
+
+Need to create two variables: one variable that will track the percentage returns for each specific trade and another variable that will track the percentage returns for the entire trading duration.

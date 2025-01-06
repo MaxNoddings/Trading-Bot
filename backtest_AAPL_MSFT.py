@@ -14,6 +14,7 @@ def update_positions(row, prev_position):
 def calculate_returns(data):
     # Initialize variables
     cumulative_returns = 0  # Cumulative return in dollars
+    initial_portfolio_value = 0 # Initial Portfolio Value upon the first trade
     entry_price_aapl = 0    # Entry price for AAPL
     entry_price_msft = 0    # Entry price for MSFT
     trade_count = 0         # Count the number of trades
@@ -26,6 +27,10 @@ def calculate_returns(data):
 
         # Check for position changes
         if prev_row['Position'] == 0 and current_row['Position'] == 1:
+            # Set the Initial Portfolio Value upon the first trade
+            if trade_count == 0:
+                initial_portfolio_value = current_row['AAPL'] + current_row['MSFT']
+            
             # Enter trade based on Z-Score
             trade_count += 1
             if current_row['Z_Score'] < 0:
@@ -54,13 +59,19 @@ def calculate_returns(data):
             # Update cumulative returns
             cumulative_returns += trade_return
 
+            # Calculate percent return from the trade
+            starting_amount = entry_price_aapl + entry_price_msft
+            percent_return = (trade_return / starting_amount) * 100
+            
             # Print trade performance
             print(f"Trade {trade_count}: Exit at AAPL={exit_price_aapl:.2f}, MSFT={exit_price_msft:.2f}")
-            print(f"Trade {trade_count}: Return = ${trade_return:.2f} ({(trade_return / 2) * 100:.2f}%)\n")
+            print(f"Trade {trade_count}: Return = ${trade_return:.2f} ({percent_return:.2f}%)\n")
 
     # Print cumulative results
     print(f"Total Trades: {trade_count}")
-    print(f"Cumulative Return = ${cumulative_returns:.2f} ({(cumulative_returns / 2) * 100:.2f}%)\n")
+    print(f"Initial Portfolio Value: {initial_portfolio_value:.2f}")
+    print(f"Final Portfolio Value: {initial_portfolio_value + cumulative_returns:.2f}")
+    print(f"Cumulative Return = ${cumulative_returns:.2f} ({(cumulative_returns / initial_portfolio_value) * 100:.2f}%)\n")
 
 def main():
     # Step 1: Fetch historical data
