@@ -13,13 +13,13 @@ data['Spread_Mean'] = data['Spread'].rolling(window=30).mean()
 data['Spread_Std'] = data['Spread'].rolling(window=30).std()
 data['Z_Score'] = (data['Spread'] - data['Spread_Mean']) / data['Spread_Std']
 
-print(data.to_string())
-
+# print(data.to_string())
+# print(data)
 print("-----------------------------------------------------------------------------------")
 
 # Step 3: Define trading signals
-z_entry_threshold = 2
-z_exit_threshold = 0.5
+z_entry_threshold = 1.7
+z_exit_threshold = 0.35
 
 data['Long'] = data['Z_Score'] < -z_entry_threshold  # Long AAPL, Short MSFT
 data['Short'] = data['Z_Score'] > z_entry_threshold  # Short AAPL, Long MSFT
@@ -27,29 +27,35 @@ data['Exit'] = abs(data['Z_Score']) < z_exit_threshold
 
 data = data.dropna()
 print(data.to_string())
-
-# Step 4: Simulate trades
-positions = pd.DataFrame(index=data.index)
-positions['AAPL'] = 0
-positions['MSFT'] = 0
-
-long_signal = data['Long'] & ~data['Long'].shift(1, fill_value=False)  # Entry signal
-short_signal = data['Short'] & ~data['Short'].shift(1, fill_value=False)  # Entry signal
-exit_signal = data['Exit'] & ~data['Exit'].shift(1, fill_value=False)  # Exit signal
-
-positions.loc[long_signal, 'AAPL'] = 1
-positions.loc[long_signal, 'MSFT'] = -1
-positions.loc[short_signal, 'AAPL'] = -1
-positions.loc[short_signal, 'MSFT'] = 1
-positions.loc[exit_signal, ['AAPL', 'MSFT']] = 0
-
-print(positions.to_string())
-
-positions['AAPL'] = positions['AAPL'].cumsum()  # Running position count
-positions['MSFT'] = positions['MSFT'].cumsum()
-
+# print(data)
 print("-----------------------------------------------------------------------------------")
-print(positions.to_string())
+
+# # Step 4: Simulate trades
+# positions = pd.DataFrame(index=data.index)
+# positions['AAPL'] = 0
+# positions['MSFT'] = 0
+
+# long_signal = data['Long'] & ~data['Long'].shift(1, fill_value=False)  # Entry signal
+# short_signal = data['Short'] & ~data['Short'].shift(1, fill_value=False)  # Entry signal
+# exit_signal = data['Exit'] & ~data['Exit'].shift(1, fill_value=False)  # Exit signal
+
+# positions.loc[long_signal, 'AAPL'] = 1
+# positions.loc[long_signal, 'MSFT'] = -1
+# positions.loc[short_signal, 'AAPL'] = -1
+# positions.loc[short_signal, 'MSFT'] = 1
+# positions.loc[exit_signal, ['AAPL', 'MSFT']] = 0
+
+# print(positions.to_string())
+# # print(positions)
+# print("-----------------------------------------------------------------------------------")
+
+
+# positions['AAPL'] = positions['AAPL'].cumsum()  # Running position count
+# positions['MSFT'] = positions['MSFT'].cumsum()
+
+# print("-----------------------------------------------------------------------------------")
+# print(positions.to_string())
+# print(positions)
 
 # # Step 5: Calculate portfolio returns
 # returns = data.pct_change()
