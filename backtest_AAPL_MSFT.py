@@ -11,6 +11,57 @@ def update_positions(row, prev_position):
     else:  # No change, keep the previous state
         return prev_position
 
+def calculate_returns(data):
+    # Initialize variables
+    cumulative_returns = 0  # Cumulative return in dollars
+    entry_price_aapl = 0    # Entry price for AAPL
+    entry_price_msft = 0    # Entry price for MSFT
+    trade_count = 0         # Count the number of trades
+    
+    # Iterate through the DataFrame to track trades
+    for i in range(1, len(data)):
+        # Get current and previous rows
+        current_row = data.iloc[i]
+        prev_row = data.iloc[i - 1]
+
+        # Check for position changes
+        if prev_row['Position'] == 0 and current_row['Position'] == 1:
+            # Enter trade based on Z-Score
+            trade_count += 1
+            if current_row['Z_Score'] < 0:
+                # Long AAPL, Short MSFT
+                entry_price_aapl = current_row['AAPL']
+                entry_price_msft = current_row['MSFT']
+                trade_direction = "Long AAPL, Short MSFT"
+            else:
+                # Short AAPL, Long MSFT
+                entry_price_aapl = current_row['AAPL']
+                entry_price_msft = current_row['MSFT']
+                trade_direction = "Short AAPL, Long MSFT"
+
+            print(f"Trade {trade_count}: Enter {trade_direction} at AAPL={entry_price_aapl:.2f}, MSFT={entry_price_msft:.2f}")
+
+        elif prev_row['Position'] == 1 and current_row['Position'] == 0:
+            # Exit trade and calculate returns
+            exit_price_aapl = current_row['AAPL']
+            exit_price_msft = current_row['MSFT']
+
+            if trade_direction == "Long AAPL, Short MSFT":
+                trade_return = (exit_price_aapl - entry_price_aapl) - (exit_price_msft - entry_price_msft)
+            else:
+                trade_return = (entry_price_aapl - exit_price_aapl) - (entry_price_msft - exit_price_msft)
+
+            # Update cumulative returns
+            cumulative_returns += trade_return
+
+            # Print trade performance
+            print(f"Trade {trade_count}: Exit at AAPL={exit_price_aapl:.2f}, MSFT={exit_price_msft:.2f}")
+            print(f"Trade {trade_count}: Return = ${trade_return:.2f} ({(trade_return / 2) * 100:.2f}%)\n")
+
+    # Print cumulative results
+    print(f"Total Trades: {trade_count}")
+    print(f"Cumulative Return = ${cumulative_returns:.2f} ({(cumulative_returns / 2) * 100:.2f}%)\n")
+
 def main():
     # Step 1: Fetch historical data
     tickers = ['AAPL', 'MSFT']
@@ -21,10 +72,6 @@ def main():
     data['Spread_Mean'] = data['Spread'].rolling(window=30).mean()
     data['Spread_Std'] = data['Spread'].rolling(window=30).std()
     data['Z_Score'] = (data['Spread'] - data['Spread_Mean']) / data['Spread_Std']
-
-    # print(data.to_string())
-    # print(data)
-    print("-----------------------------------------------------------------------------------")
 
     # Step 3: Define trading signals
     z_entry_threshold = 1.7
@@ -46,72 +93,10 @@ def main():
     # Update the DataFrame with the calculated positions
     data['Position'] = positions
 
-    # # Vectorized logic to set position states
-    # # When "Enter" is True, start a position
-    # data.loc[data['Enter'], 'Position'] = True
-
-    # # When "Exit" is True, end a position
-    # data['Position'] = data['Position'].shift().fillna(True)  # Carry forward positions until exit
-    # data.loc[data['Exit'], 'Position'] = False
-    # data['Position'] = data['Position'].ffill().fillna(False) # Ensure positions are carried forward
-
-    # data['Long'] = data['Z_Score'] < -z_entry_threshold  # Long AAPL, Short MSFT
-    # data['Short'] = data['Z_Score'] > z_entry_threshold  # Short AAPL, Long MSFT
-    # data['Exit'] = abs(data['Z_Score']) < z_exit_threshold
-
     data = data.dropna()
-    print(data.to_string())
-    # print(data)
-    print("-----------------------------------------------------------------------------------")
+    # print(data.to_string())
 
-    # # Step 4: Simulate trades
-    # positions = pd.DataFrame(index=data.index)
-    # positions['AAPL'] = 0
-    # positions['MSFT'] = 0
-
-    # print("POSITIONS DATAFRAME INITIALIZATION -----------------------------------------------------------------------------------")
-    # print(positions.to_string())
-    # print("-----------------------------------------------------------------------------------")
-
-    # # Find where in the history, a change is made in the data
-    # long_signal = data['Long'] & ~data['Long'].shift(1, fill_value=False)  # Entry signal
-    # short_signal = data['Short'] & ~data['Short'].shift(1, fill_value=False)  # Entry signal
-    # exit_signal = data['Exit'] & ~data['Exit'].shift(1, fill_value=False)  # Exit signal
-
-    # print("POSITIONS DATAFRAME FIRST FILL -----------------------------------------------------------------------------------")
-    # print(positions.to_string())
-    # print("-----------------------------------------------------------------------------------")
-
-    # positions.loc[long_signal, 'AAPL'] = 1
-    # positions.loc[long_signal, 'MSFT'] = -1
-    # positions.loc[short_signal, 'AAPL'] = -1
-    # positions.loc[short_signal, 'MSFT'] = 1
-    # positions.loc[exit_signal, ['AAPL', 'MSFT']] = 0
-
-    # print("POSITIONS DATAFRAME 1, -1, 0 FILL -----------------------------------------------------------------------------------")
-    # print(positions.to_string())
-    # print(positions)
-    # print("-----------------------------------------------------------------------------------")
-
-
-    # positions['AAPL'] = positions['AAPL'].cumsum()  # Running position count
-    # positions['MSFT'] = positions['MSFT'].cumsum()
-
-    # print("-----------------------------------------------------------------------------------")
-    # print(positions.to_string())
-    # print(positions)
-
-    # # Step 5: Calculate portfolio returns
-    # returns = data.pct_change()
-    # portfolio_returns = positions.shift().mul(returns).sum(axis=1)  # Daily portfolio return
-    # cumulative_returns = (1 + portfolio_returns).cumprod()
-
-    # # Step 6: Plot results
-    # plt.figure(figsize=(12, 6))
-    # plt.plot(cumulative_returns, label="Cumulative Returns")
-    # plt.title("Pairs Trading Backtest: AAPL and MSFT")
-    # plt.legend()
-    # plt.show()
+    calculate_returns(data)
 
 if __name__ == "__main__":
     main()
