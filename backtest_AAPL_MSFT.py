@@ -18,6 +18,7 @@ def calculate_returns(data):
     entry_price_aapl = 0    # Entry price for AAPL
     entry_price_msft = 0    # Entry price for MSFT
     trade_count = 0         # Count the number of trades
+    days_elapsed = 0 # Count the number of days elapsed for each trade
     
     # Iterate through the DataFrame to track trades
     for i in range(1, len(data)):
@@ -25,8 +26,14 @@ def calculate_returns(data):
         current_row = data.iloc[i]
         prev_row = data.iloc[i - 1]
 
+        # Add one to days elapsed
+        days_elapsed += 1
+
         # Check for position changes
         if prev_row['Position'] == 0 and current_row['Position'] == 1:
+            # Reset days elapsed to 0, since a new trade is starting
+            days_elapsed = 0
+            
             # Set the Initial Portfolio Value upon the first trade
             if trade_count == 0:
                 initial_portfolio_value = current_row['AAPL'] + current_row['MSFT']
@@ -44,7 +51,8 @@ def calculate_returns(data):
                 entry_price_msft = current_row['MSFT']
                 trade_direction = "Short AAPL, Long MSFT"
 
-            print(f"Trade {trade_count}: Enter {trade_direction} at AAPL={entry_price_aapl:.2f}, MSFT={entry_price_msft:.2f}")
+            print(f"Trade {trade_count}: Enter {trade_direction}")
+            print(f"Trade {trade_count}: Enter at AAPL=${entry_price_aapl:.2f}, MSFT=${entry_price_msft:.2f}")
 
         elif prev_row['Position'] == 1 and current_row['Position'] == 0:
             # Exit trade and calculate returns
@@ -64,13 +72,14 @@ def calculate_returns(data):
             percent_return = (trade_return / starting_amount) * 100
             
             # Print trade performance
-            print(f"Trade {trade_count}: Exit at AAPL={exit_price_aapl:.2f}, MSFT={exit_price_msft:.2f}")
-            print(f"Trade {trade_count}: Return = ${trade_return:.2f} ({percent_return:.2f}%)\n")
+            print(f"Trade {trade_count}: Exit at AAPL=${exit_price_aapl:.2f}, MSFT=${exit_price_msft:.2f}")
+            print(f"Trade {trade_count}: Return = ${trade_return:.2f} ({percent_return:.2f}%)")
+            print(f"Trade {trade_count}: Duration = {days_elapsed} business days\n")
 
     # Print cumulative results
     print(f"Total Trades: {trade_count}")
-    print(f"Initial Portfolio Value: {initial_portfolio_value:.2f}")
-    print(f"Final Portfolio Value: {initial_portfolio_value + cumulative_returns:.2f}")
+    print(f"Initial Portfolio Value: ${initial_portfolio_value:.2f}")
+    print(f"Final Portfolio Value: ${initial_portfolio_value + cumulative_returns:.2f}")
     print(f"Cumulative Return = ${cumulative_returns:.2f} ({(cumulative_returns / initial_portfolio_value) * 100:.2f}%)\n")
 
 def main():
