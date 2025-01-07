@@ -1,3 +1,4 @@
+import argparse
 import yfinance as yf 
 import pandas as pd
 import numpy as np
@@ -85,9 +86,20 @@ def calculate_returns(data):
     print(f"Cumulative Return = ${cumulative_returns:.2f} ({(cumulative_returns / initial_portfolio_value) * 100:.2f}%)\n")
 
 def main():
+    # Argparse
+    parser = argparse.ArgumentParser(description="Backtest Statistical Arbitrage Trading Strategy on Stocks")
+    parser.add_argument("-tick1", type=str, help="first stock ticker symbol (e.g., AAPL).", required=True)
+    parser.add_argument("-tick2", type=str, help="second stock ticker symbol (e.g., MSFT).", required=True)
+    parser.add_argument("-zenter", type=float, help="entry z-score threshold", required=False, default=1.7)
+    parser.add_argument("-zexit", type=float, help="exit z-score threshold", required=False, default=0.35)
+    parser.add_argument("-start", type=str, help="backtest start date", required=False, default='2010-01-01')
+    parser.add_argument("-end", type=str, help="backtest end date", required=False, default='2023-12-31')
+
+    args = parser.parse_args()
+    
     # Step 1: Fetch historical data
-    tickers = ['AAPL', 'MSFT']
-    data = yf.download(tickers, start='2010-01-01', end='2023-12-31')['Adj Close'] # A DataFrame containing dates as the index and adjusted closing prices for AAPL and MSFT as columns
+    tickers = [args.tick1, args.tick2]
+    data = yf.download(tickers, start=args.start, end=args.end)['Adj Close'] # A DataFrame containing dates as the index and adjusted closing prices for AAPL and MSFT as columns
 
     # Step 2: Calculate spread and z-score
     data['Spread'] = data['AAPL'] - data['MSFT']
@@ -96,8 +108,8 @@ def main():
     data['Z_Score'] = (data['Spread'] - data['Spread_Mean']) / data['Spread_Std']
 
     # Step 3: Define trading signals
-    z_entry_threshold = 1.7
-    z_exit_threshold = 0.35
+    z_entry_threshold = args.zenter
+    z_exit_threshold = args.zexit
 
     data['Enter'] = abs(data['Z_Score']) > z_entry_threshold
     data['Exit'] = abs(data['Z_Score']) < z_exit_threshold

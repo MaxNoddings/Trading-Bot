@@ -185,3 +185,10 @@ What would my total return percentage be? = 8.57%
 
 
 Need to create two variables: one variable that will track the percentage returns for each specific trade and another variable that will track the percentage returns for the entire trading duration.
+
+
+Next Up: Add command line options to modularize code
+- custom options for z-score
+- custom options for date range
+    - default would be the auto-date finder from the coint/corr code
+- custom stock ticker names
