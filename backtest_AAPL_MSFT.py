@@ -40,6 +40,7 @@ def calculate_returns(data):
             
             # Enter trade based on Z-Score
             trade_count += 1
+            entry_date = current_row.name 
             if current_row['Z_Score'] < 0:
                 # Long AAPL, Short MSFT
                 entry_price_aapl = current_row['AAPL']
@@ -52,12 +53,13 @@ def calculate_returns(data):
                 trade_direction = "Short AAPL, Long MSFT"
 
             print(f"Trade {trade_count}: Enter {trade_direction}")
-            print(f"Trade {trade_count}: Enter at AAPL=${entry_price_aapl:.2f}, MSFT=${entry_price_msft:.2f}")
+            print(f"Trade {trade_count}: Enter at AAPL=${entry_price_aapl:.2f}, MSFT=${entry_price_msft:.2f} ({entry_date.strftime('%Y-%m-%d')})")
 
         elif prev_row['Position'] == 1 and current_row['Position'] == 0:
             # Exit trade and calculate returns
             exit_price_aapl = current_row['AAPL']
             exit_price_msft = current_row['MSFT']
+            exit_date = current_row.name # Get exit date
 
             if trade_direction == "Long AAPL, Short MSFT":
                 trade_return = (exit_price_aapl - entry_price_aapl) - (exit_price_msft - entry_price_msft)
@@ -72,7 +74,7 @@ def calculate_returns(data):
             percent_return = (trade_return / starting_amount) * 100
             
             # Print trade performance
-            print(f"Trade {trade_count}: Exit at AAPL=${exit_price_aapl:.2f}, MSFT=${exit_price_msft:.2f}")
+            print(f"Trade {trade_count}: Exit at AAPL=${exit_price_aapl:.2f}, MSFT=${exit_price_msft:.2f} ({exit_date.strftime('%Y-%m-%d')})")
             print(f"Trade {trade_count}: Return = ${trade_return:.2f} ({percent_return:.2f}%)")
             print(f"Trade {trade_count}: Duration = {days_elapsed} business days\n")
 
