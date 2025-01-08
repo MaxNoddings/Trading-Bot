@@ -192,3 +192,7 @@ Next Up: Add command line options to modularize code
 - custom options for date range
     - default would be the auto-date finder from the coint/corr code
 - custom stock ticker names
+
+. . . 
+
+Next: add the auto-date finder from the coint/corr code for the default dates
