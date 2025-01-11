@@ -125,15 +125,6 @@ def main():
     # Get todays date for default end date
     today = datetime.date.today()
     formatted_date_today = today.strftime("%Y-%m-%d")
-    
-    # Parse the tickers first
-    initial_parser = argparse.ArgumentParser(description="Backtest Statistical Arbitrage Trading Strategy on Stocks")
-    initial_parser.add_argument("-tick1", type=str, help="first stock ticker symbol (e.g., AAPL).", required=True)
-    initial_parser.add_argument("-tick2", type=str, help="second stock ticker symbol (e.g., MSFT).", required=True)
-    initial_args, _ = initial_parser.parse_known_args()
-
-    # Compute the default value for -end based on the tickers
-    default_start_date = get_most_recent_ipo(initial_args.tick1, initial_args.tick2)
 
     # Parse all arguments, including the computed default for -end
     parser = argparse.ArgumentParser(description="Backtest Statistical Arbitrage Trading Strategy on Stocks")
@@ -141,25 +132,19 @@ def main():
     parser.add_argument("-tick2", type=str, help="second stock ticker symbol (e.g., MSFT).", required=True)
     parser.add_argument("-zenter", type=float, help="entry z-score threshold", required=False, default=1.7)
     parser.add_argument("-zexit", type=float, help="exit z-score threshold", required=False, default=0.35)
-    parser.add_argument("-start", type=str, help="backtest start date", required=False, default=str(default_start_date))
+    parser.add_argument("-start", type=str, help="backtest start date", required=False)
     parser.add_argument("-end", type=str, help="backtest end date", required=False, default=formatted_date_today)
 
     args = parser.parse_args()
     
-    # # Argparse
-    # parser = argparse.ArgumentParser(description="Backtest Statistical Arbitrage Trading Strategy on Stocks")
-    # parser.add_argument("-tick1", type=str, help="first stock ticker symbol (e.g., AAPL).", required=True)
-    # parser.add_argument("-tick2", type=str, help="second stock ticker symbol (e.g., MSFT).", required=True)
-    # parser.add_argument("-zenter", type=float, help="entry z-score threshold", required=False, default=1.7)
-    # parser.add_argument("-zexit", type=float, help="exit z-score threshold", required=False, default=0.35)
-    # parser.add_argument("-start", type=str, help="backtest start date", required=False, default='2010-01-01')
-    # parser.add_argument("-end", type=str, help="backtest end date", required=False, default=get_most_recent_ipo(args.tick1, args.tick2))
-
-    # args = parser.parse_args()
+    if args.start is None:
+        stock_data_start_date = get_most_recent_ipo(args.tick1, args.tick2)
+    else:
+        stock_data_start_date = args.start
     
     # Step 1: Fetch historical data
     tickers = [args.tick1, args.tick2]
-    data = yf.download(tickers, start=args.start, end=args.end)['Adj Close'] # A DataFrame containing dates as the index and adjusted closing prices for AAPL and MSFT as columns
+    data = yf.download(tickers, start=stock_data_start_date, end=args.end)['Adj Close'] # A DataFrame containing dates as the index and adjusted closing prices for AAPL and MSFT as columns
 
     # Step 2: Calculate spread and z-score
     data['Spread'] = data['AAPL'] - data['MSFT']
@@ -192,7 +177,7 @@ def main():
 
     calculate_returns(data)
     print(f"{args.tick1} and {args.tick2}") # Print out stocks being traded
-    print(f"Trading Period: {args.start} to {args.end}\n") # Print out trading time period
+    print(f"Trading Period: {stock_data_start_date} to {args.end}\n") # Print out trading time period
 
 if __name__ == "__main__":
     main()
