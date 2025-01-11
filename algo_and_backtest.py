@@ -15,6 +15,31 @@ def get_ipo_date(tickerObject):
         print(f"Error fetching data for {ticker}: {e}")
         return None
 
+def get_most_recent_ipo(ticker1, ticker2):
+    tickerObject1 = yf.Ticker(ticker1)
+    tickerObject2 = yf.Ticker(ticker2)
+    ipo_date1 = get_ipo_date(tickerObject1)
+    ipo_date2 = get_ipo_date(tickerObject2)
+
+    # Compare IPO dates and select the most recent
+    if ipo_date1 > ipo_date2:
+        print("START DATE ASSIGNED")
+        print(f"{ticker1} has a more recent IPO of {ipo_date1}.")
+        print(f"{ticker2}'s was on {ipo_date2}.")
+        return ipo_date1
+    elif ipo_date2 > ipo_date1:
+        print("START DATE ASSIGNED")
+        print(f"{ticker2} has a more recent IPO of {ipo_date2}.")
+        print(f"{ticker1}'s was on {ipo_date1}.")
+        return ipo_date2
+    else:
+        print("START DATES ASSIGNED AND MUST BE THE SAME?")
+        print(f"{ticker2}'S IPO was on {ipo_date2}.")
+        print(f"{ticker1}'s IPO was on {ipo_date1}.")
+        return ipo_date2
+
+
+
 def update_positions(row, prev_position):
     if row['Enter']:  # Open command
         return 1
@@ -97,16 +122,40 @@ def calculate_returns(data):
     print(f"Cumulative Return = ${cumulative_returns:.2f} ({(cumulative_returns / initial_portfolio_value) * 100:.2f}%)")
 
 def main():
-    # Argparse
+    # Get todays date for default end date
+    today = datetime.date.today()
+    formatted_date_today = today.strftime("%Y-%m-%d")
+    
+    # Parse the tickers first
+    initial_parser = argparse.ArgumentParser(description="Backtest Statistical Arbitrage Trading Strategy on Stocks")
+    initial_parser.add_argument("-tick1", type=str, help="first stock ticker symbol (e.g., AAPL).", required=True)
+    initial_parser.add_argument("-tick2", type=str, help="second stock ticker symbol (e.g., MSFT).", required=True)
+    initial_args, _ = initial_parser.parse_known_args()
+
+    # Compute the default value for -end based on the tickers
+    default_start_date = get_most_recent_ipo(initial_args.tick1, initial_args.tick2)
+
+    # Parse all arguments, including the computed default for -end
     parser = argparse.ArgumentParser(description="Backtest Statistical Arbitrage Trading Strategy on Stocks")
     parser.add_argument("-tick1", type=str, help="first stock ticker symbol (e.g., AAPL).", required=True)
     parser.add_argument("-tick2", type=str, help="second stock ticker symbol (e.g., MSFT).", required=True)
     parser.add_argument("-zenter", type=float, help="entry z-score threshold", required=False, default=1.7)
     parser.add_argument("-zexit", type=float, help="exit z-score threshold", required=False, default=0.35)
-    parser.add_argument("-start", type=str, help="backtest start date", required=False, default='2010-01-01')
-    parser.add_argument("-end", type=str, help="backtest end date", required=False, default=datetime.date.today().strftime("%Y-%m-%d"))
+    parser.add_argument("-start", type=str, help="backtest start date", required=False, default=str(default_start_date))
+    parser.add_argument("-end", type=str, help="backtest end date", required=False, default=formatted_date_today)
 
     args = parser.parse_args()
+    
+    # # Argparse
+    # parser = argparse.ArgumentParser(description="Backtest Statistical Arbitrage Trading Strategy on Stocks")
+    # parser.add_argument("-tick1", type=str, help="first stock ticker symbol (e.g., AAPL).", required=True)
+    # parser.add_argument("-tick2", type=str, help="second stock ticker symbol (e.g., MSFT).", required=True)
+    # parser.add_argument("-zenter", type=float, help="entry z-score threshold", required=False, default=1.7)
+    # parser.add_argument("-zexit", type=float, help="exit z-score threshold", required=False, default=0.35)
+    # parser.add_argument("-start", type=str, help="backtest start date", required=False, default='2010-01-01')
+    # parser.add_argument("-end", type=str, help="backtest end date", required=False, default=get_most_recent_ipo(args.tick1, args.tick2))
+
+    # args = parser.parse_args()
     
     # Step 1: Fetch historical data
     tickers = [args.tick1, args.tick2]

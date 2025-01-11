@@ -196,5 +196,6 @@ Next Up: Add command line options to modularize code
 . . . 
 
 Next: add the auto-date finder from the coint/corr code for the default dates
+    - pass two ticker names into a function and have the function return the later IPO date in the correct format
 
 .... also: modify code so that it supports interchanging different ticker names!!
