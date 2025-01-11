@@ -196,3 +196,5 @@ Next Up: Add command line options to modularize code
 . . . 
 
 Next: add the auto-date finder from the coint/corr code for the default dates
+
+.... also: modify code so that it supports interchanging different ticker names!!

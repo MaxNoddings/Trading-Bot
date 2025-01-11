@@ -1,8 +1,19 @@
 import argparse
+import datetime
 import yfinance as yf 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
+def get_ipo_date(tickerObject):
+    """Gets the estimated IPO date of a stock using yfinance."""
+    try:
+        hist = tickerObject.history(period="max")
+        print("ABLE TO GET IPO DATE")
+        return hist.index.min().date()
+    except Exception as e:
+        print(f"Error fetching data for {ticker}: {e}")
+        return None
 
 def update_positions(row, prev_position):
     if row['Enter']:  # Open command
@@ -83,7 +94,7 @@ def calculate_returns(data):
     print(f"Total Trades: {trade_count}")
     print(f"Initial Portfolio Value: ${initial_portfolio_value:.2f}")
     print(f"Final Portfolio Value: ${initial_portfolio_value + cumulative_returns:.2f}")
-    print(f"Cumulative Return = ${cumulative_returns:.2f} ({(cumulative_returns / initial_portfolio_value) * 100:.2f}%)\n")
+    print(f"Cumulative Return = ${cumulative_returns:.2f} ({(cumulative_returns / initial_portfolio_value) * 100:.2f}%)")
 
 def main():
     # Argparse
@@ -93,7 +104,7 @@ def main():
     parser.add_argument("-zenter", type=float, help="entry z-score threshold", required=False, default=1.7)
     parser.add_argument("-zexit", type=float, help="exit z-score threshold", required=False, default=0.35)
     parser.add_argument("-start", type=str, help="backtest start date", required=False, default='2010-01-01')
-    parser.add_argument("-end", type=str, help="backtest end date", required=False, default='2023-12-31')
+    parser.add_argument("-end", type=str, help="backtest end date", required=False, default=datetime.date.today().strftime("%Y-%m-%d"))
 
     args = parser.parse_args()
     
@@ -131,6 +142,8 @@ def main():
     # print(data.to_string())
 
     calculate_returns(data)
+    print(f"{args.tick1} and {args.tick2}") # Print out stocks being traded
+    print(f"Trading Period: {args.start} to {args.end}\n") # Print out trading time period
 
 if __name__ == "__main__":
     main()
