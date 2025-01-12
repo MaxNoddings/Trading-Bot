@@ -42,11 +42,13 @@ def calculate_returns(data):
     # Initialize variables
     cumulative_returns = 0  # Cumulative return in dollars
     initial_portfolio_value = 0 # Initial Portfolio Value upon the first trade
-    entry_price_aapl = 0    # Entry price for AAPL
-    entry_price_msft = 0    # Entry price for MSFT
+    entry_price_stock1 = 0    # Entry price for AAPL
+    entry_price_stock2 = 0    # Entry price for MSFT
     trade_count = 0         # Count the number of trades
     completed_trades = 0    # Number of completed trades
     days_elapsed = 0 # Count the number of days elapsed for each trade
+    stock1 = data.columns[0] # ticker1
+    stock2 = data.columns[1] # ticker2
     
     # Iterate through the DataFrame to track trades
     for i in range(1, len(data)):
@@ -64,45 +66,45 @@ def calculate_returns(data):
             
             # Set the Initial Portfolio Value upon the first trade
             if trade_count == 0:
-                initial_portfolio_value = current_row['AAPL'] + current_row['MSFT']
+                initial_portfolio_value = current_row[stock1] + current_row[stock2]
             
             # Enter trade based on Z-Score
             trade_count += 1
             entry_date = current_row.name 
             if current_row['Z_Score'] < 0:
-                # Long AAPL, Short MSFT
-                entry_price_aapl = current_row['AAPL']
-                entry_price_msft = current_row['MSFT']
-                trade_direction = "Long AAPL, Short MSFT"
+                # Long stock1, Short stock2
+                entry_price_stock1 = current_row[stock1]
+                entry_price_stock2 = current_row[stock2]
+                trade_direction = "Long " + stock1 + ", Short " + stock2
             else:
-                # Short AAPL, Long MSFT
-                entry_price_aapl = current_row['AAPL']
-                entry_price_msft = current_row['MSFT']
-                trade_direction = "Short AAPL, Long MSFT"
+                # Short stock1, Long stock2
+                entry_price_stock1 = current_row[stock1]
+                entry_price_stock2 = current_row[stock2]
+                trade_direction = "Short " + stock1 + ", Long " + stock2
 
             print(f"Trade {trade_count}: Enter {trade_direction}")
-            print(f"Trade {trade_count}: Enter at AAPL=${entry_price_aapl:.2f}, MSFT=${entry_price_msft:.2f} ({entry_date.strftime('%Y-%m-%d')})")
+            print(f"Trade {trade_count}: Enter at {stock1}=${entry_price_stock1:.2f}, {stock2}=${entry_price_stock2:.2f} ({entry_date.strftime('%Y-%m-%d')})")
 
         elif prev_row['Position'] == 1 and current_row['Position'] == 0:
             # Exit trade and calculate returns
-            exit_price_aapl = current_row['AAPL']
-            exit_price_msft = current_row['MSFT']
+            exit_price_stock1 = current_row[stock1]
+            exit_price_stock2 = current_row[stock2]
             exit_date = current_row.name # Get exit date
 
-            if trade_direction == "Long AAPL, Short MSFT":
-                trade_return = (exit_price_aapl - entry_price_aapl) - (exit_price_msft - entry_price_msft)
+            if trade_direction == "Long " + stock1 + ", Short " + stock2:
+                trade_return = (exit_price_stock1 - entry_price_stock1) - (exit_price_stock2 - entry_price_stock2)
             else:
-                trade_return = (entry_price_aapl - exit_price_aapl) - (entry_price_msft - exit_price_msft)
+                trade_return = (entry_price_stock1 - exit_price_stock1) - (entry_price_stock2 - exit_price_stock2)
 
             # Update cumulative returns
             cumulative_returns += trade_return
 
             # Calculate percent return from the trade
-            starting_amount = entry_price_aapl + entry_price_msft
+            starting_amount = entry_price_stock1 + entry_price_stock2
             percent_return = (trade_return / starting_amount) * 100
             
             # Print trade performance
-            print(f"Trade {trade_count}: Exit at AAPL=${exit_price_aapl:.2f}, MSFT=${exit_price_msft:.2f} ({exit_date.strftime('%Y-%m-%d')})")
+            print(f"Trade {trade_count}: Exit at {stock1}=${exit_price_stock1:.2f}, {stock2}=${exit_price_stock2:.2f} ({exit_date.strftime('%Y-%m-%d')})")
             print(f"Trade {trade_count}: Return = ${trade_return:.2f} ({percent_return:.2f}%)")
             print(f"Trade {trade_count}: Duration = {days_elapsed} business days\n")
 
@@ -173,11 +175,9 @@ def main():
     data['Position'] = positions
 
     data = data.dropna()
-    # print(data.to_string())
+    print(data.to_string())
 
     calculate_returns(data)
-    # print(f"{args.tick1} and {args.tick2}") # Print out stocks being traded
-    # print(f"Trading Period: {stock_data_start_date} to {args.end}\n") # Print out trading time period
 
 if __name__ == "__main__":
     print("")

@@ -207,3 +207,7 @@ I think that you should be able to extract the names of the stocks from the data
 Also, I think that you should be able to extract the data of the trading period (dates) from the data DataFrame as well?
 
 ^ this way you could print all of the correct data that you want to display from just taking in the data DataFrame into the calculate_returns function.
+
+
+It appears that the spread needs to be negative in order for the algorithm to trade correctlt
+    try to introduce an absolute value into the equation and see how it operates -> this should cover for the case if the stocks cross paths with eachother?
