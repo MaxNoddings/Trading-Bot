@@ -199,3 +199,11 @@ Next: add the auto-date finder from the coint/corr code for the default dates
     - pass two ticker names into a function and have the function return the later IPO date in the correct format
 
 .... also: modify code so that it supports interchanging different ticker names!!
+
+.. in the calculate return function should I have it take in the name of the stocks?? And should it return a string with all the calculations that it has made?
+
+I think that you should be able to extract the names of the stocks from the data table?
+
+Also, I think that you should be able to extract the data of the trading period (dates) from the data DataFrame as well?
+
+^ this way you could print all of the correct data that you want to display from just taking in the data DataFrame into the calculate_returns function.

@@ -9,7 +9,6 @@ def get_ipo_date(tickerObject):
     """Gets the estimated IPO date of a stock using yfinance."""
     try:
         hist = tickerObject.history(period="max")
-        print("ABLE TO GET IPO DATE")
         return hist.index.min().date()
     except Exception as e:
         print(f"Error fetching data for {ticker}: {e}")
@@ -23,19 +22,10 @@ def get_most_recent_ipo(ticker1, ticker2):
 
     # Compare IPO dates and select the most recent
     if ipo_date1 > ipo_date2:
-        print("START DATE ASSIGNED")
-        print(f"{ticker1} has a more recent IPO of {ipo_date1}.")
-        print(f"{ticker2}'s was on {ipo_date2}.")
         return ipo_date1
     elif ipo_date2 > ipo_date1:
-        print("START DATE ASSIGNED")
-        print(f"{ticker2} has a more recent IPO of {ipo_date2}.")
-        print(f"{ticker1}'s was on {ipo_date1}.")
         return ipo_date2
     else:
-        print("START DATES ASSIGNED AND MUST BE THE SAME?")
-        print(f"{ticker2}'S IPO was on {ipo_date2}.")
-        print(f"{ticker1}'s IPO was on {ipo_date1}.")
         return ipo_date2
 
 
@@ -55,6 +45,7 @@ def calculate_returns(data):
     entry_price_aapl = 0    # Entry price for AAPL
     entry_price_msft = 0    # Entry price for MSFT
     trade_count = 0         # Count the number of trades
+    completed_trades = 0    # Number of completed trades
     days_elapsed = 0 # Count the number of days elapsed for each trade
     
     # Iterate through the DataFrame to track trades
@@ -115,8 +106,11 @@ def calculate_returns(data):
             print(f"Trade {trade_count}: Return = ${trade_return:.2f} ({percent_return:.2f}%)")
             print(f"Trade {trade_count}: Duration = {days_elapsed} business days\n")
 
+            # Update the number of completed trades
+            completed_trades = trade_count
+
     # Print cumulative results
-    print(f"Total Trades: {trade_count}")
+    print(f"\nTotal Completed Trades: {completed_trades}")
     print(f"Initial Portfolio Value: ${initial_portfolio_value:.2f}")
     print(f"Final Portfolio Value: ${initial_portfolio_value + cumulative_returns:.2f}")
     print(f"Cumulative Return = ${cumulative_returns:.2f} ({(cumulative_returns / initial_portfolio_value) * 100:.2f}%)")
@@ -134,25 +128,31 @@ def main():
     parser.add_argument("-zexit", type=float, help="exit z-score threshold", required=False, default=0.35)
     parser.add_argument("-start", type=str, help="backtest start date", required=False)
     parser.add_argument("-end", type=str, help="backtest end date", required=False, default=formatted_date_today)
-
     args = parser.parse_args()
     
+    # Assign stock data start date for data download
     if args.start is None:
         stock_data_start_date = get_most_recent_ipo(args.tick1, args.tick2)
     else:
         stock_data_start_date = args.start
-    
-    # Step 1: Fetch historical data
-    tickers = [args.tick1, args.tick2]
-    data = yf.download(tickers, start=stock_data_start_date, end=args.end)['Adj Close'] # A DataFrame containing dates as the index and adjusted closing prices for AAPL and MSFT as columns
 
-    # Step 2: Calculate spread and z-score
-    data['Spread'] = data['AAPL'] - data['MSFT']
+    # Print out trading start date and end date
+    print(f"BACKTEST START DATE: {stock_data_start_date}")
+    print(f"BACKTEST END DATE: {args.end}\n")
+    
+    # Fetch historical data
+    tickers = [args.tick1, args.tick2]
+    print(f"DOWNLOADING STOCK DATA FOR: {tickers[0]} and {tickers[1]}")
+    data = yf.download(tickers, start=stock_data_start_date, end=args.end)['Adj Close'] # A DataFrame containing dates as the index and adjusted closing prices for AAPL and MSFT as columns
+    print("")
+
+    # Calculate spread and z-score
+    data['Spread'] = data[tickers[0]] - data[tickers[1]]
     data['Spread_Mean'] = data['Spread'].rolling(window=30).mean()
     data['Spread_Std'] = data['Spread'].rolling(window=30).std()
     data['Z_Score'] = (data['Spread'] - data['Spread_Mean']) / data['Spread_Std']
 
-    # Step 3: Define trading signals
+    # Define trading signals
     z_entry_threshold = args.zenter
     z_exit_threshold = args.zexit
 
@@ -176,8 +176,10 @@ def main():
     # print(data.to_string())
 
     calculate_returns(data)
-    print(f"{args.tick1} and {args.tick2}") # Print out stocks being traded
-    print(f"Trading Period: {stock_data_start_date} to {args.end}\n") # Print out trading time period
+    # print(f"{args.tick1} and {args.tick2}") # Print out stocks being traded
+    # print(f"Trading Period: {stock_data_start_date} to {args.end}\n") # Print out trading time period
 
 if __name__ == "__main__":
+    print("")
     main()
+    print("")
