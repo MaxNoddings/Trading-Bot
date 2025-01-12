@@ -211,3 +211,12 @@ Also, I think that you should be able to extract the data of the trading period 
 
 It appears that the spread needs to be negative in order for the algorithm to trade correctlt
     try to introduce an absolute value into the equation and see how it operates -> this should cover for the case if the stocks cross paths with eachother?
+
+Or maybe everything is working correctly, but the returns are being posted incorrectly?
+. . . 
+So it looks like the position markers are being placed in the right spot, but for some reason the longs and shorts must be mixed up because the percentages of returns are exactly as they should be, but they are negative?
+
+2015-3-12 to 2015-3-20
+
+
+It looks like the longs and shorts are mixed up?

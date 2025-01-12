@@ -71,7 +71,7 @@ def calculate_returns(data):
             # Enter trade based on Z-Score
             trade_count += 1
             entry_date = current_row.name 
-            if current_row['Z_Score'] < 0:
+            if current_row['Z_Score'] > 0:
                 # Long stock1, Short stock2
                 entry_price_stock1 = current_row[stock1]
                 entry_price_stock2 = current_row[stock2]
@@ -149,7 +149,8 @@ def main():
     print("")
 
     # Calculate spread and z-score
-    data['Spread'] = data[tickers[0]] - data[tickers[1]]
+    data['Spread'] = abs(data[tickers[0]] - data[tickers[1]])
+    # data['Spread'] = data[tickers[0]] - data[tickers[1]]
     data['Spread_Mean'] = data['Spread'].rolling(window=30).mean()
     data['Spread_Std'] = data['Spread'].rolling(window=30).std()
     data['Z_Score'] = (data['Spread'] - data['Spread_Mean']) / data['Spread_Std']
