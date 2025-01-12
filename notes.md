@@ -220,3 +220,20 @@ So it looks like the position markers are being placed in the right spot, but fo
 
 
 It looks like the longs and shorts are mixed up?
+
+
+
+I think that you need to fix the logic for the long/shorting of stocks
+- it needs to short the higher-priced asset and long the lower-priced asset if the z-score is +
+- opposite if the z-score is -
+ ^ the difference between what you have now and this is that what you have now it automatically buys one stock or the other if the z-score is + or - -> it doesn't check which asset is the higher priced one. Implement this!! This will cover for the case if the stock prices cross paths and the one which has always been more expensive in the past becomes the less-expensive one
+
+ Actually ... I think the algorithm should cover for this case right now!! All good.
+
+
+
+ Next up for this project:
+ - Find a way to comb the market for the best stocks for the my algorithm?
+ - Find a way to tailor the z-scores for a specific stock pair?
+ - Make visualizations of the pair trading strategy.
+ - Deploy strategy in real, paper-trading environment. (Do this as soon as possible (to learn what the process is)
