@@ -58,4 +58,5 @@ if __name__ == "__main__":
                 logging.info("Market is closed. Waiting for next trading day.")
         except Exception as e:
             logging.error(f"Exception occurred: {e}")
-        time.sleep(60 * 15)  # wait 15 min before next run
+        # time.sleep(60 * 15)  # wait 15 min before next run
+        time.sleep(15) # try to wait just 15 seconds between runs for testing purposes
