@@ -1,0 +1,7 @@
+services:
+  - type: worker
+    name: alpaca-trading-bot
+    env: python
+    plan: free
+    buildCommand: pip install -r alpaca_trading_bot/requirements.txt
+    startCommand: python3 alpaca_trading_bot/momentumBot.py
