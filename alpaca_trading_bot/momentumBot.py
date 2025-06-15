@@ -1,10 +1,11 @@
 from alpaca_trade_api.rest import REST, TimeFrame
+import os
 import pandas as pd
 import time
 import datetime
 
-API_KEY = 'API_KEY'
-SECRET_KEY = 'SECRET_KEY'
+API_KEY = os.getenv('API_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 BASE_URL = 'https://paper-api.alpaca.markets'
 
 api = REST(API_KEY, SECRET_KEY, BASE_URL)
