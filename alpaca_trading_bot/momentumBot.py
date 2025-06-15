@@ -1,8 +1,18 @@
-from alpaca_trade_api.rest import REST, TimeFrame
 import os
-import pandas as pd
 import time
 import datetime
+import logging
+import pandas as pd
+from alpaca_trade_api.rest import REST, TimeFrame
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
 
 API_KEY = os.getenv('API_KEY')
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -26,23 +36,26 @@ def run_bot():
         position = None
         try:
             position = api.get_position(symbol)
-        except:
-            pass
+        except Exception:
+            position = None
+        now_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if signal == "buy" and not position:
             api.submit_order(symbol=symbol, qty=1, side='buy', type='market', time_in_force='day')
-            print(f"{datetime.datetime.now()}: BUY {symbol}")
+            logging.info(f"BUY {symbol}")
         elif signal == "sell" and position:
             api.submit_order(symbol=symbol, qty=1, side='sell', type='market', time_in_force='day')
-            print(f"{datetime.datetime.now()}: SELL {symbol}")
+            logging.info(f"SELL {symbol}")
 
-# Run every X minutes during market hours
-while True:
-    now = datetime.datetime.now()
-    print(f"Running the Stockbot at {now.strftime('%Y-%m-%d %H:%M:%S')}")
-    if now.weekday() < 5 and now.hour >= 9 and now.hour <= 16:
-        run_bot()
-    else:
-        print("Market is closed. Waiting for next trading day.")
-
-    # time.sleep(60 * 15)  # run every 15 min
-    time.sleep(15)
+if __name__ == "__main__":
+    logging.info("Starting Alpaca momentum bot...")
+    while True:
+        try:
+            now = datetime.datetime.now()
+            logging.info(f"Running the Stockbot Now")
+            if now.weekday() < 5 and 9 <= now.hour <= 16:
+                run_bot()
+            else:
+                logging.info("Market is closed. Waiting for next trading day.")
+        except Exception as e:
+            logging.error(f"Exception occurred: {e}")
+        time.sleep(60 * 15)  # wait 15 min before next run
